@@ -1,4 +1,4 @@
 module.exports = {
-	url: "mongodb://heroku_7bl0f9cp:c765avlu1acm9pvbu1t56mnmfa@ds163053.mlab.com:63053/heroku_7bl0f9cp"
+	url: "mongodb://admin:Abcd123$0@ds159631.mlab.com:59631/heroku_l0c42pmr"
 	// url: "mongodb://localhost:27017/spark"
 }
