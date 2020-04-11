@@ -1,10 +1,9 @@
 var Chat = require('../models/chat');
-const BUCKET_NAME = 'olwapp';
-const IAM_USER_KEY = 'AKIAJ5YI3ULII2UU4HWA';
-const IAM_USER_SECRET1 = 'V717KGCwHmm';
-const IAM_USER_SECRET2 = 'AZ2FzCAaMV3DAJ';
-const IAM_USER_SECRET3 = 'OSskeDj1nw9XI5h';
-
+const BUCKET_NAME = 'olwspark';
+const IAM_USER_KEY = 'AKIAIFJ6LTJD65VW6V4A';
+const IAM_USER_SECRET1 = 'XbbcDB1Qo92';
+const IAM_USER_SECRET2 = 'wT2wnp4mO9qLGpD+';
+const IAM_USER_SECRET3 = 'GNEEyfqqj4EoS';
 
 exports.getChatListing = function(req, res, next) {
     Chat.find({}, { 
