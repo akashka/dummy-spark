@@ -1,5 +1,7 @@
 var Chat = require('../models/chat');
 var AWS = require('aws-sdk');
+var fs = require('fs');
+
 const BUCKET_NAME = 'olwspark';
 const IAM_USER_KEY = 'AKIAIFJ6LTJD65VW6V4A';
 const IAM_USER_SECRET1 = 'XbbcDB1Qo92';
@@ -71,7 +73,11 @@ exports.uploadToS3 = function(req, res, next) {
   console.log('req.body.file_name', req.body.file_name);
   console.log('req.body.contentEncoding', req.body.contentEncoding);
   console.log('req.body.contentType', req.body.contentType);
-  var buf = new Buffer(req.body.file.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+  var buf = '';
+  if(req.body.contentEncoding == 'base/64')
+    buf = new Buffer(req.body.file.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+  else 
+    buf = fs.readFileSync(req.body.file.src);
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
