@@ -67,6 +67,10 @@ exports.updateChat = function(req, res, next) {
 }
 
 exports.uploadToS3 = function(req, res, next) {
+  console.log('req.body.file', req.body.file);
+  console.log('req.body.file_name', req.body.file_name);
+  console.log('req.body.contentEncoding', req.body.contentEncoding);
+  console.log('req.body.contentType', req.body.contentType);
   var buf = new Buffer(req.body.file.replace(/^data:image\/\w+;base64,/, ""), 'base64')
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
@@ -84,8 +88,10 @@ exports.uploadToS3 = function(req, res, next) {
     };
     s3bucket.upload(params, function (err, data) {
       if (err) {
+        console.log('err', err);
         res.send(err);
       }
+      console.log('data', data);
       res.json(data);
     });
   });
