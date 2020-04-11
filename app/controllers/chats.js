@@ -1,4 +1,5 @@
 var Chat = require('../models/chat');
+var AWS = require('aws-sdk');
 const BUCKET_NAME = 'olwspark';
 const IAM_USER_KEY = 'AKIAIFJ6LTJD65VW6V4A';
 const IAM_USER_SECRET1 = 'XbbcDB1Qo92';
