@@ -4,6 +4,7 @@ var fs = require("fs");
 var mime = require("mime-types");
 var inspect = require("util").inspect;
 var Busboy = require("busboy");
+const Blob = require("cross-blob");
 
 const BUCKET_NAME = "olwspark";
 const IAM_USER_KEY = "AKIAIFJ6LTJD65VW6V4A";
@@ -131,17 +132,21 @@ function uploadNow(req, res, next, Field, blobFile) {
     Bucket: BUCKET_NAME,
     ServerSideEncryption: 'AES256'
   });
-  console.log(blobFile);
-  console.log(Field);
+  console.log('blobFile', blobFile);
+  var buffer = Buffer.from(blobFile);
+  console.log('buffer', buffer);
+  let arraybuffer = Uint8Array.from(buffer).buffer;
+  console.log('arraybuffer', arraybuffer);
   s3bucket.createBucket(function() {    
     var params = {
       Bucket: BUCKET_NAME,
       Key: Field.file_name.val,
-      Body: blobFile,
+      Body: arraybuffer,
       ACL: "public-read",
       ContentType: Field.file.mimetype
     };
-    s3bucket.upload(params, function(err, data) {
+    console.log(params);
+    s3bucket.putObject(params, function(err, data) {
       if (err) {
         console.log("err", err);
         res.send(err);
