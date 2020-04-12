@@ -131,16 +131,11 @@ function uploadNow(req, res, next, Field, blobFile) {
     Bucket: BUCKET_NAME,
     ServerSideEncryption: 'AES256'
   });
-  console.log('blobFile', blobFile);
-  var buffer = Buffer.from(blobFile);
-  console.log('buffer', buffer);
-  let arraybuffer = Uint8Array.from(buffer).buffer;
-  console.log('arraybuffer', arraybuffer);
   s3bucket.createBucket(function() {    
     var params = {
       Bucket: BUCKET_NAME,
       Key: Field.file_name.val,
-      Body: arraybuffer,
+      Body: JSON.stringify(blobFile),
       ACL: "public-read",
       ContentType: Field.file.mimetype
     };
