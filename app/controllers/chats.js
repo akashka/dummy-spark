@@ -125,13 +125,16 @@ function uploadNow(req, res, next, Field) {
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
-    Bucket: BUCKET_NAME
+    Bucket: BUCKET_NAME,
+    ServerSideEncryption: 'AES256'
   });
+  var fileToSave = new File([Field.file], Field.file_name.val);
+  console.log('fileToSave', fileToSave);
   s3bucket.createBucket(function() {    
     var params = {
       Bucket: BUCKET_NAME,
       Key: Field.file_name.val,
-      Body: Field.file.file,
+      Body: fileToSave,
       ACL: "public-read",
       ContentType: Field.file.mimetype
     };
