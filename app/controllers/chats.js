@@ -131,6 +131,8 @@ function uploadNow(req, res, next, Field, blobFile) {
     Bucket: BUCKET_NAME,
     ServerSideEncryption: 'AES256'
   });
+  console.log(blobFile);
+  console.log(Field);
   s3bucket.createBucket(function() {    
     var params = {
       Bucket: BUCKET_NAME,
