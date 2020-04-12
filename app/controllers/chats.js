@@ -131,7 +131,7 @@ function uploadNow(req, res, next, Field) {
     var params = {
       Bucket: BUCKET_NAME,
       Key: Field.file_name.val,
-      Body: Field.file.val,
+      Body: Field.file.file,
       ACL: "public-read",
       ContentType: Field.file.mimetype
     };
