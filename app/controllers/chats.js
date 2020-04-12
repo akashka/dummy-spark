@@ -98,13 +98,17 @@ exports.updateChat = function(req, res, next) {
 exports.uploadToS3 = function(req, res, next) {
   var busboy = new Busboy({ headers: req.headers });
   var Field = {};
+  var blobFile;
   busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
     Field[fieldname] = {};
     Field[fieldname].file = file;
     Field[fieldname].filename = filename;
     Field[fieldname].encoding = encoding;
     Field[fieldname].mimetype = mimetype;
-    file.on("data", function(data) { });
+    blobFile = file;
+    file.on("data", function(data) { 
+      // blobFile = data;
+    });
     file.on("end", function() { });
   });
   busboy.on("field", function(fieldname, val, fieldnameTruncated, encoding, mimetype) {
@@ -115,26 +119,29 @@ exports.uploadToS3 = function(req, res, next) {
     Field[fieldname].mimetype = mimetype;
   });
   busboy.on("finish", function() {
-    uploadNow(req, res, next, Field);
+    uploadNow(req, res, next, Field, blobFile);
   });
   req.pipe(busboy);
 };
 
-function uploadNow(req, res, next, Field) {
+function uploadNow(req, res, next, Field, blobFile) {
   console.log('Filed', JSON.stringify(Field));
+  console.log('------------------------------');
+  console.log('blobFile', blobFile);
+  console.log('blobFile', JSON.stringify(blobFile));
+  console.log('------------------------------');
+
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
     Bucket: BUCKET_NAME,
     ServerSideEncryption: 'AES256'
   });
-  var fileToSave = blobToFile([Field.file], Field.file_name.val);
-  console.log('fileToSave', fileToSave);
   s3bucket.createBucket(function() {    
     var params = {
       Bucket: BUCKET_NAME,
       Key: Field.file_name.val,
-      Body: fileToSave,
+      Body: Field.file,
       ACL: "public-read",
       ContentType: Field.file.mimetype
     };
@@ -147,9 +154,3 @@ function uploadNow(req, res, next, Field) {
     });
   });
 };
-
-function blobToFile(theBlob, fileName){
-  theBlob.lastModifiedDate = new Date();
-  theBlob.name = fileName;
-  return theBlob;
-}
