@@ -4,7 +4,6 @@ var fs = require("fs");
 var mime = require("mime-types");
 var inspect = require("util").inspect;
 var Busboy = require("busboy");
-const Blob = require("cross-blob");
 
 const BUCKET_NAME = "olwspark";
 const IAM_USER_KEY = "AKIAIFJ6LTJD65VW6V4A";
