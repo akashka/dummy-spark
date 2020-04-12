@@ -128,7 +128,7 @@ function uploadNow(req, res, next, Field) {
     Bucket: BUCKET_NAME,
     ServerSideEncryption: 'AES256'
   });
-  var fileToSave = new File([Field.file], Field.file_name.val);
+  var fileToSave = blobToFile([Field.file], Field.file_name.val);
   console.log('fileToSave', fileToSave);
   s3bucket.createBucket(function() {    
     var params = {
@@ -147,3 +147,9 @@ function uploadNow(req, res, next, Field) {
     });
   });
 };
+
+function blobToFile(theBlob, fileName){
+  theBlob.lastModifiedDate = new Date();
+  theBlob.name = fileName;
+  return theBlob;
+}
