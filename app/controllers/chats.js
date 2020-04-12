@@ -125,12 +125,6 @@ exports.uploadToS3 = function(req, res, next) {
 };
 
 function uploadNow(req, res, next, Field, blobFile) {
-  console.log('Filed', JSON.stringify(Field));
-  console.log('------------------------------');
-  console.log('blobFile', blobFile);
-  console.log('blobFile', JSON.stringify(blobFile));
-  console.log('------------------------------');
-
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
@@ -141,7 +135,7 @@ function uploadNow(req, res, next, Field, blobFile) {
     var params = {
       Bucket: BUCKET_NAME,
       Key: Field.file_name.val,
-      Body: Field.file,
+      Body: blobFile,
       ACL: "public-read",
       ContentType: Field.file.mimetype
     };
