@@ -121,6 +121,7 @@ exports.uploadToS3 = function(req, res, next) {
 };
 
 function uploadNow(req, res, next, Field) {
+  console.log('Filed', JSON.stringify(Field));
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
