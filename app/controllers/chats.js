@@ -3,8 +3,6 @@ var AWS = require("aws-sdk");
 var fs = require("fs");
 var mime = require("mime-types");
 var inspect = require("util").inspect;
-var Busboy = require("busboy");
-const Blob = require("cross-blob");
 
 const BUCKET_NAME = "olwspark";
 const IAM_USER_KEY = "AKIAIFJ6LTJD65VW6V4A";
@@ -51,7 +49,11 @@ exports.getChatMessages = function(req, res, next) {
     chats
   ) {
     if (!err) {
-      chats.last_login[userId] = new Date();
+      if (chats.last_login) { chats.last_login[userId] = new Date(); }
+      else {
+        chats.last_login = {};
+        chats.last_login[userId] = new Date();
+      }
       Chat.findOneAndUpdate(
         { _id: chats._id },
         { $set: { last_login: chats.last_login } },
@@ -126,57 +128,24 @@ exports.createChat = function(req, res, next) {
 };
 
 exports.uploadToS3 = function(req, res, next) {
-  var busboy = new Busboy({ headers: req.headers });
-  var Field = {};
-  var blobFile;
-  busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
-    Field[fieldname] = {};
-    Field[fieldname].file = file;
-    Field[fieldname].filename = filename;
-    Field[fieldname].encoding = encoding;
-    Field[fieldname].mimetype = mimetype;
-    blobFile = file;
-    file.on("data", function(data) {
-      // blobFile = data;
-    });
-    file.on("end", function() {});
-  });
-  busboy.on("field", function(
-    fieldname,
-    val,
-    fieldnameTruncated,
-    encoding,
-    mimetype
-  ) {
-    Field[fieldname] = {};
-    Field[fieldname].val = val;
-    Field[fieldname].fieldnameTruncated = fieldnameTruncated;
-    Field[fieldname].encoding = encoding;
-    Field[fieldname].mimetype = mimetype;
-  });
-  busboy.on("finish", function() {
-    uploadNow(req, res, next, Field, blobFile);
-  });
-  req.pipe(busboy);
-};
-
-function uploadNow(req, res, next, Field, blobFile) {
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
     Bucket: BUCKET_NAME,
     ServerSideEncryption: "AES256"
   });
+  const base64Data = new Buffer.from(req.body.file.replace(/^data:image\/\w+;base64,/, ""), 'base64');
   s3bucket.createBucket(function() {
     var params = {
       Bucket: BUCKET_NAME,
-      Key: Field.file_name.val,
-      Body: blobFile,
+      Key: req.body.file_name,
+      Body: base64Data,
       ACL: "public-read",
-      ContentType: Field.file.mimetype
+      ContentEncoding: 'base64',
+      ContentType: req.body.file_mime
     };
     console.log(params);
-    s3bucket.putObject(params, function(err, data) {
+    s3bucket.upload(params, function(err, data) {
       if (err) {
         console.log("err", err);
         res.send(err);
