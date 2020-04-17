@@ -167,86 +167,22 @@ function uploadNow(req, res, next, Field, blobFile) {
     Bucket: BUCKET_NAME,
     ServerSideEncryption: "AES256"
   });
-  fs.readFile("chat_5e62c872807d8b4803382011_1.pdf", function(err, data) {
-    s3bucket.createBucket(function() {
-      var params = {
-        Bucket: BUCKET_NAME,
-        Key: Field.file_name.val,
-        Body: data,
-        ACL: "public-read",
-        ContentType: Field.file.mimetype
-      };
-      console.log(params);
-      s3bucket.putObject(params, function(err, data) {
-        if (err) {
-          console.log("err", err);
-          res.send(err);
-        }
-        console.log(data);
-        res.json(data);
-      });
+  s3bucket.createBucket(function() {
+    var params = {
+      Bucket: BUCKET_NAME,
+      Key: Field.file_name.val,
+      Body: blobFile,
+      ACL: "public-read",
+      ContentType: Field.file.mimetype
+    };
+    console.log(params);
+    s3bucket.putObject(params, function(err, data) {
+      if (err) {
+        console.log("err", err);
+        res.send(err);
+      }
+      console.log(data);
+      res.json(data);
     });
   });
 }
-
-blobFile = {
-  _readableState: {
-    objectMode: false,
-    highWaterMark: 16384,
-    buffer: { head: null, tail: null, length: 0 },
-    length: 0,
-    pipes: null,
-    pipesCount: 0,
-    flowing: true,
-    ended: true,
-    endEmitted: true,
-    reading: false,
-    sync: false,
-    needReadable: false,
-    emittedReadable: false,
-    readableListening: false,
-    resumeScheduled: false,
-    destroyed: false,
-    defaultEncoding: "utf8",
-    awaitDrain: 0,
-    readingMore: false,
-    decoder: null,
-    encoding: null
-  },
-  readable: false,
-  domain: null,
-  _events: { end: [[Function], [Function]], data: [Function] },
-  _eventsCount: 2,
-  _maxListeners: undefined,
-  truncated: false,
-  _read: [Function]
-};
-
-Field = {
-  file: {
-    file: {
-      _readableState: [Object],
-      readable: false,
-      domain: null,
-      _events: [Object],
-      _eventsCount: 2,
-      _maxListeners: undefined,
-      truncated: false,
-      _read: [Function]
-    },
-    filename: "blob",
-    encoding: "7bit",
-    mimetype: "application/octet-stream"
-  },
-  file_name: {
-    val: "chat_5e62c872807d8b4803382011_1.pdf",
-    fieldnameTruncated: false,
-    encoding: false,
-    mimetype: "7bit"
-  }
-};
-
-var imageBuffer = blobFile._readableState.buffer;
-var imageName = "chat_5e62c872807d8b4803382011_1.pdf";
-fs.createWriteStream(imageName).write(imageBuffer);
-uploadNow({}, {}, {}, Field, blobFile);
