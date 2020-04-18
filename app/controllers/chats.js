@@ -115,7 +115,7 @@ exports.uploadToS3 = function(req, res, next) {
     Bucket: BUCKET_NAME,
     ServerSideEncryption: "AES256"
   });
-  req.body.file = req.body.file.replace(/^data:\w\/\w+;base64,/, "");
+  req.body.file = req.body.file.replace(/^data:[\w\W]*;base64,/, "");
   const base64Data = new Buffer.from(req.body.file, 'base64');
   s3bucket.createBucket(function() {
     var params = {
