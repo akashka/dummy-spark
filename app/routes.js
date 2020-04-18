@@ -95,7 +95,7 @@ module.exports = function(app){
     chatRoutes.get('/messages/:chatId/:userId', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.getChatMessages);
     chatRoutes.put('/messages/:id', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.updateChatMessage);
     chatRoutes.put('/:id', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.updateChat);
-    centerRoutes.post('/', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.createChat);
+    chatRoutes.post('/', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.createChat);
 
     apiRoutes.post('/uploadToS3', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.uploadToS3);
 

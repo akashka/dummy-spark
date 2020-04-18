@@ -144,7 +144,9 @@ exports.uploadToS3 = function(req, res, next) {
       ContentEncoding: 'base64',
       ContentType: req.body.file_mime
     };
-    console.log(params);
+    console.log('------------------------------------------------------------');
+    console.log('S3 UPLOAD PARAMS', params);
+    console.log('------------------------------------------------------------');
     s3bucket.upload(params, function(err, data) {
       if (err) {
         console.log("err", err);
