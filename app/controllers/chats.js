@@ -104,26 +104,7 @@ exports.createChat = function(req, res, next) {
     if (err) {
       res.send(err);
     }
-    Chat.find(
-      {},
-      {
-        _id: 1,
-        group_id: 1,
-        dp: 1,
-        name: 1,
-        members: 1,
-        silent_members: 1,
-        admin: 1,
-        last_login: 1,
-        active: 1
-      },
-      function(err, chats) {
-        if (err) {
-          res.send(err);
-        }
-        res.json(chats);
-      }
-    );
+    res.json(chat);
   });
 };
 

@@ -8,23 +8,18 @@ var ChatSchema = new mongoose.Schema({
     },
     dp: {
         type: Object,
-        required: true
     },
     name: {
         type: Object,
-        required: true
     },
     members: {
     	type: Array,
-        required: true
     },
     silent_members: {
     	type: Array,
-        required: true
     },
     admin: {
     	type: Array,
-        required: true
     },
     messages: {
     	type: Array
