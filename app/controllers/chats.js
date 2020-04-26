@@ -4,9 +4,9 @@ var fs = require("fs");
 var mime = require("mime-types");
 var inspect = require("util").inspect;
 const Pusher = require("pusher");
-const Sentiment = require('sentiment');   
+// const Sentiment = require('sentiment');   
 
-const sentiment = new Sentiment();
+// const sentiment = new Sentiment();
 // const pusher = new Pusher({
 //   appId: process.env.PUSHER_APP_ID,
 //   key: process.env.PUSHER_KEY,
@@ -78,7 +78,7 @@ exports.getChatMessages = function(req, res, next) {
 exports.updateChatMessage = function(req, res, next) {
   var id = req.params.id;
   var message = req.body;
-  message.sentiment = sentiment.analyze(message.text ? message.text : '');
+  // message.sentiment = sentiment.analyze(message.text ? message.text : '');
   Chat.findOneAndUpdate({ _id: id }, { $set: { messages: message } }, function(
     err,
     chat
