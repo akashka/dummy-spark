@@ -3,6 +3,17 @@ var AWS = require("aws-sdk");
 var fs = require("fs");
 var mime = require("mime-types");
 var inspect = require("util").inspect;
+const Pusher = require("pusher");
+const Sentiment = require('sentiment');   
+
+const sentiment = new Sentiment();
+// const pusher = new Pusher({
+//   appId: process.env.PUSHER_APP_ID,
+//   key: process.env.PUSHER_KEY,
+//   secret: process.env.PUSHER_SECRET,
+//   cluster: process.env.PUSHER_CLUSTER,
+//   encrypted: true
+// });
 
 const BUCKET_NAME = "olwspark";
 const IAM_USER_KEY = "AKIAIFJ6LTJD65VW6V4A";
@@ -49,8 +60,9 @@ exports.getChatMessages = function(req, res, next) {
     chats
   ) {
     if (!err) {
-      if (chats.last_login) { chats.last_login[userId] = new Date(); }
-      else {
+      if (chats.last_login) {
+        chats.last_login[userId] = new Date();
+      } else {
         chats.last_login = {};
         chats.last_login[userId] = new Date();
       }
@@ -66,6 +78,7 @@ exports.getChatMessages = function(req, res, next) {
 exports.updateChatMessage = function(req, res, next) {
   var id = req.params.id;
   var message = req.body;
+  message.sentiment = sentiment.analyze(message.text ? message.text : '');
   Chat.findOneAndUpdate({ _id: id }, { $set: { messages: message } }, function(
     err,
     chat
@@ -116,19 +129,19 @@ exports.uploadToS3 = function(req, res, next) {
     ServerSideEncryption: "AES256"
   });
   req.body.file = req.body.file.replace(/^data:[\w\W]*;base64,/, "");
-  const base64Data = new Buffer.from(req.body.file, 'base64');
+  const base64Data = new Buffer.from(req.body.file, "base64");
   s3bucket.createBucket(function() {
     var params = {
       Bucket: BUCKET_NAME,
       Key: req.body.file_name,
       Body: base64Data,
       ACL: "public-read",
-      ContentEncoding: 'base64',
+      ContentEncoding: "base64",
       ContentType: req.body.file_mime
     };
-    console.log('------------------------------------------------------------');
-    console.log('S3 UPLOAD PARAMS', params);
-    console.log('------------------------------------------------------------');
+    console.log("------------------------------------------------------------");
+    console.log("S3 UPLOAD PARAMS", params);
+    console.log("------------------------------------------------------------");
     s3bucket.upload(params, function(err, data) {
       if (err) {
         console.log("err", err);
@@ -138,4 +151,4 @@ exports.uploadToS3 = function(req, res, next) {
       res.json(data);
     });
   });
-}
+};
