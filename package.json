@@ -20,6 +20,7 @@
     "body-parser": "^1.15.2",
     "busboy": "^0.3.1",
     "cors": "^2.8.1",
+    "cross-blob": "^1.2.2",
     "curlrequest": "^1.0.1",
     "express": "^4.17.1",
     "html-to-image": "^0.1.1",
@@ -40,6 +41,7 @@
     "phantom-html-to-pdf": "^0.5.6",
     "pusher": "^3.0.1",
     "request-promise": "^4.2.1",
+    "sentiment": "^5.0.2",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "speakeasy": "^2.0.0"
