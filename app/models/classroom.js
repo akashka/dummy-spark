@@ -35,4 +35,4 @@ var ClassroomSchema = new mongoose.Schema({
     timestamps: true
 });
  
-module.exports = mongoose.model('Student', StudentSchema);
+module.exports = mongoose.model('Classroom', ClassroomSchema);
