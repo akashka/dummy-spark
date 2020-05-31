@@ -148,7 +148,7 @@ exports.uploadToS3 = function(req, res, next) {
   });
 };
 
-generateScreenshotFromVideo = function(req, res, next) {
+exports.generateScreenshotFromVideo = function(req, res, next) {
   console.log(req);
   const videopath = req.body.file_url;
   const pathToSnapshot = path.join(__dirname, "../../", "file-snapshot");
