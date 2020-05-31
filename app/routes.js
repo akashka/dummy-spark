@@ -107,7 +107,8 @@ module.exports = function(app){
     chatRoutes.post('/', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.createChat);
 
     apiRoutes.post('/uploadToS3', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.uploadToS3);
-
+    apiRoutes.post('/generateScreenshotFromVideo', requireAuth, AuthenticationController.roleAuthorization(['admin','centeradmin','counsellor','dispatcher','teacher','parent']), ChatController.generateScreenshotFromVideo);
+    
     // Set up routes
     app.use('/api', apiRoutes);
  

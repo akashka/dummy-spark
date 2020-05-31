@@ -23,6 +23,7 @@
     "cross-blob": "^1.2.2",
     "curlrequest": "^1.0.1",
     "express": "^4.17.1",
+    "fluent-ffmpeg": "^2.1.2",
     "html-to-image": "^0.1.1",
     "image-to-base64": "^2.0.1",
     "json2csv": "^3.11.5",

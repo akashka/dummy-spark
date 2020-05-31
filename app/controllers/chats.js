@@ -3,17 +3,12 @@ var AWS = require("aws-sdk");
 var fs = require("fs");
 var mime = require("mime-types");
 var inspect = require("util").inspect;
-const Pusher = require("pusher");
-const Sentiment = require('sentiment');   
+var Pusher = require("pusher");
+var Sentiment = require("sentiment");
+var ffmpeg = require("fluent-ffmpeg");
+var path = require("path");
 
 const sentiment = new Sentiment();
-// const pusher = new Pusher({
-//   appId: process.env.PUSHER_APP_ID,
-//   key: process.env.PUSHER_KEY,
-//   secret: process.env.PUSHER_SECRET,
-//   cluster: process.env.PUSHER_CLUSTER,
-//   encrypted: true
-// });
 
 const BUCKET_NAME = "olwspark";
 const IAM_USER_KEY = "AKIAIFJ6LTJD65VW6V4A";
@@ -78,7 +73,7 @@ exports.getChatMessages = function(req, res, next) {
 exports.updateChatMessage = function(req, res, next) {
   var id = req.params.id;
   var message = req.body;
-  message.sentiment = sentiment.analyze(message.text ? message.text : '');
+  message.sentiment = sentiment.analyze(message.text ? message.text : "");
   Chat.findOneAndUpdate({ _id: id }, { $set: { messages: message } }, function(
     err,
     chat
@@ -151,4 +146,49 @@ exports.uploadToS3 = function(req, res, next) {
       res.json(data);
     });
   });
+};
+
+generateScreenshotFromVideo = function(req, res, next) {
+  console.log(req);
+  const videopath = req.body.file_url;
+  const pathToSnapshot = path.join(__dirname, "../../", "file-snapshot");
+  var proc = new ffmpeg(videopath)
+    .takeScreenshots(
+      {
+        count: 1,
+        size: "150x100",
+        timemarks: ["2"] // number of seconds
+      },
+      pathToSnapshot,
+      function(err, filenames) {
+        console.log("screenshots were not saved " + err);
+        console.log("screenshots were saved " + filenames);
+      }
+    )
+    .on("end", function() {
+      fs.readFile((pathToSnapshot + '/tn.png'), (err, data) => {
+        let s3bucket = new AWS.S3({
+          accessKeyId: IAM_USER_KEY,
+          secretAccessKey:
+            IAM_USER_SECRET1 + IAM_USER_SECRET2 + IAM_USER_SECRET3,
+          Bucket: BUCKET_NAME,
+          ServerSideEncryption: "AES256"
+        });
+        s3bucket.createBucket(function() {
+          var params = {
+            Bucket: BUCKET_NAME,
+            Key: req.body.file_name,
+            Body: data,
+            ContentType: "image/png"
+          };
+          s3bucket.upload(params, function(err, data) {
+            if (err) {
+              console.log("err", err);
+              res.send(err);
+            }
+            res.json(data);
+          });
+        });
+      });
+    });
 };

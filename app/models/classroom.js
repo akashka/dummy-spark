@@ -14,6 +14,10 @@ var ClassroomSchema = new mongoose.Schema({
     	type: String,
     	required: true
     },
+    image_src: {
+        type: String,
+        required: true
+    },
     video_msg: {
     	type: String
     },
