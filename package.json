@@ -10,6 +10,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "@ionic-native/core": "^4.1.0",
     "@ionic-native/splash-screen": "^4.1.0",
     "@sendgrid/mail": "^6.1.2",

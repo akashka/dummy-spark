@@ -5,8 +5,11 @@ var mime = require("mime-types");
 var inspect = require("util").inspect;
 var Pusher = require("pusher");
 var Sentiment = require("sentiment");
-var ffmpeg = require("fluent-ffmpeg");
 var path = require("path");
+
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+var ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const sentiment = new Sentiment();
 
